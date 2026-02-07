@@ -1,47 +1,17 @@
 package br.com.sualoja.dao;
 
 import br.com.sualoja.model.Produto;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
+// IMPORTANTE:
+// 1. Tem que ser 'interface' e não 'class'
+// 2. Tem que estender JpaRepository<Entidade, TipoDoId>
+// No seu caso, o ID do Produto é Integer
 @Repository
-public class ProdutoDAO {
+public interface ProdutoDAO extends JpaRepository<Produto, Integer> {
 
-    @PersistenceContext
-    private EntityManager em;
+    // Não precisa escrever nada aqui dentro!
+    // O Spring cria o findAll, save, deleteById automaticamente pra você.
 
-    public ProdutoDAO() {
-    }
-
-    public ProdutoDAO(EntityManager em) {
-        this.em = em;
-    }
-
-    @Transactional
-    public void cadastrar(Produto produto) {
-        this.em.persist(produto);
-    }
-
-    public Produto buscarPorId(Integer id) {
-        return this.em.find(Produto.class, id);
-    }
-
-    @Transactional
-    public void atualizar(Produto produto) {
-        this.em.merge(produto);
-    }
-
-    @Transactional
-    public void remover(Produto produto) {
-        produto = this.em.merge(produto);
-        this.em.remove(produto);
-    }
-
-    public List<Produto> buscarTodos() {
-        String jpql = "SELECT p FROM Produto p";
-        return em.createQuery(jpql, Produto.class).getResultList();
-    }
 }

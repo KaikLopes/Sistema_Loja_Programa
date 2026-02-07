@@ -2,9 +2,13 @@ package br.com.sualoja.dao;
 
 import br.com.sualoja.model.Categoria;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class CategoriaDAO {
 
+    @PersistenceContext
     private EntityManager em;
 
     public CategoriaDAO(EntityManager em) {

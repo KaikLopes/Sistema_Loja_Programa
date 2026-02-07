@@ -2,9 +2,12 @@ package br.com.sualoja.dao;
 
 import br.com.sualoja.model.Fornecedor;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class FornecedorDAO {
-
+    @PersistenceContext
     private EntityManager em;
 
     public FornecedorDAO(EntityManager em) {
