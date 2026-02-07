@@ -2,10 +2,13 @@ package br.com.sualoja.dao;
 
 import br.com.sualoja.model.Pessoa;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
-
+@Repository
 public class PessoaDAO {
-
+    @PersistenceContext
     private EntityManager em;
 
     public PessoaDAO(EntityManager em) {
