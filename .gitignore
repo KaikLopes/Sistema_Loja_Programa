@@ -1,0 +1,30 @@
+# --- Arquivos Compilados e Logs ---
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+
+# --- Maven (Essencial) ---
+# Ignora a pasta target, onde ficam os arquivos compilados (.class) e o .jar final
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.properties
+
+
+# VS Code
+.vscode/
+
+
+# --- Sistema Operacional ---
+.DS_Store
+Thumbs.db
+
+# --- Segurança (Opcional, mas recomendado se usar variáveis de ambiente) ---
+.env

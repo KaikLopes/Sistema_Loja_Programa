@@ -1,0 +1,26 @@
+package br.com.sualoja.model;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "Clientes")
+@PrimaryKeyJoinColumn(name = "pessoa_id")
+public class Cliente extends Pessoa {
+
+    private String telefone;
+    private String endereco;
+
+    public Cliente() {}
+
+    public Cliente(String nome, String cpf, String telefone, String endereco) {
+        super(nome, cpf);
+        this.telefone = telefone;
+        this.endereco = endereco;
+    }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public String getEndereco() { return endereco; }
+    public void setEndereco(String endereco) { this.endereco = endereco; }
+}
