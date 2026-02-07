@@ -1,10 +1,9 @@
-package br.com.sualoja.Controller;
+package br.com.sualoja.controller;
 
 import br.com.sualoja.dao.CategoriaDAO;
 import br.com.sualoja.model.Categoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import java.util.List;
 
 @Controller
 public class CategoriaController {
