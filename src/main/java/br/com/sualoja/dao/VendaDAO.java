@@ -1,31 +1,25 @@
 package br.com.sualoja.dao;
 
 import br.com.sualoja.model.Venda;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Repository; // <--- Importante
-import org.springframework.transaction.annotation.Transactional; // <--- Importante
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param; // <--- IMPORTANTE
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Repository // <--- Isso diz pro Spring: "Eu cuido do banco, me use!"
-public class VendaDAO {
-
-    @PersistenceContext // <--- O Spring injeta o EntityManager aqui sozinho
-    private EntityManager em;
-
-    // Pode remover o construtor manual se quiser, o @PersistenceContext resolve
+public interface VendaDAO extends JpaRepository<Venda, Long> {
     
-    @Transactional // <--- Garante que salva tudo ou nada (commit/rollback)
-    public void cadastrar(Venda venda) {
-        this.em.persist(venda);
-    }
+    List<Venda> findByClienteNomeContainingIgnoreCase(String nome);
 
-    public Venda buscarPorId(Long id) {
-        return this.em.find(Venda.class, id);
-    }
+    @Query("SELECT COALESCE(SUM(v.valorTotal), 0) FROM Venda v")
+    BigDecimal calcularTotalFaturamento();
 
-    public List<Venda> buscarTodos() {
-        String jpql = "SELECT v FROM Venda v";
-        return em.createQuery(jpql, Venda.class).getResultList();
-    }
+    List<Venda> findByDataHoraBetween(LocalDateTime inicio, LocalDateTime fim);
+
+    // --- CORREÇÃO: Adicionado @Param para garantir o funcionamento ---
+    @Query("SELECT COALESCE(SUM(v.valorTotal), 0) FROM Venda v WHERE v.dataHora BETWEEN :inicio AND :fim")
+    BigDecimal calcularFaturamentoPorPeriodo(@Param("inicio") LocalDateTime inicio, @Param("fim") LocalDateTime fim);
+
+    long countByDataHoraBetween(LocalDateTime inicio, LocalDateTime fim);
 }
