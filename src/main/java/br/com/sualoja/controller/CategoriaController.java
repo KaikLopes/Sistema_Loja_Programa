@@ -4,7 +4,6 @@ import br.com.sualoja.dao.CategoriaDAO;
 import br.com.sualoja.model.Categoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import java.util.List;
 
 @Controller
 public class CategoriaController {
@@ -13,14 +12,14 @@ public class CategoriaController {
     private CategoriaDAO categoriaDAO;
 
     public void salvar(Categoria categoria) {
-        categoriaDAO.save(categoria);
+        categoriaDAO.cadastrar(categoria);
     }
 
-    public List<Categoria> listarTodas() {
-        return categoriaDAO.findAllByOrderByNomeAsc();
+    public Categoria buscarPorId(Integer id) {
+        return categoriaDAO.buscarPorId(id);
     }
 
-    public void excluir(Integer id) {
-        categoriaDAO.deleteById(id);
+    public void excluir(Categoria categoria) {
+        categoriaDAO.remover(categoria);
     }
 }
