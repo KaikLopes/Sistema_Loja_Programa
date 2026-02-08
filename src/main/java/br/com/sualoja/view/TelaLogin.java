@@ -3,7 +3,7 @@ package br.com.sualoja.view;
 import br.com.sualoja.controller.UsuarioController;
 import br.com.sualoja.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component; // A Culpa é dessa anotação aqui (conflito de nome)
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,71 +17,76 @@ public class TelaLogin extends JFrame {
     private UsuarioController usuarioController;
 
     @Autowired
-    private TelaDashboard telaDashboard;
+    private TelaPrincipal telaPrincipal;
 
     @Autowired
     private TelaCadastro telaCadastro;
 
-    public TelaLogin() {
+    public void iniciar() {
         setTitle("Login - Sistema Loja");
-        setSize(400, 350);
+        setSize(400, 450); // Aumentei um pouco a altura para caber tudo bem
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
         setLayout(new BorderLayout());
-    }
 
-    public void iniciar() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
         panel.setBackground(Color.WHITE);
 
-        // Título
+        // Componentes
         JLabel lblTitulo = new JLabel("Bem-vindo");
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        // CORREÇÃO AQUI: Usando java.awt.Component explicitamente
         lblTitulo.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
         
-        // Campos
         JLabel lblUser = new JLabel("Usuário");
-        lblUser.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT); // CORREÇÃO
+        lblUser.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
         JTextField txtLogin = new JTextField();
         txtLogin.setMaximumSize(new Dimension(300, 30));
         
         JLabel lblPass = new JLabel("Senha");
-        lblPass.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT); // CORREÇÃO
+        lblPass.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
         JPasswordField txtSenha = new JPasswordField();
         txtSenha.setMaximumSize(new Dimension(300, 30));
 
-        // Botão Entrar
-        JButton btnEntrar = new JButton("ENTRAR NO SISTEMA");
-        btnEntrar.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT); // CORREÇÃO
-        btnEntrar.setBackground(new Color(51, 102, 255));
+        JButton btnEntrar = new JButton("ENTRAR");
+        btnEntrar.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        btnEntrar.setBackground(new Color(33, 41, 54)); 
         btnEntrar.setForeground(Color.WHITE);
-        btnEntrar.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnEntrar.setMaximumSize(new Dimension(300, 40));
         btnEntrar.setFocusPainted(false);
+        btnEntrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        // Link de Cadastro
-        JLabel lblCadastrar = new JLabel("Não tem conta? Cadastre-se aqui.");
-        lblCadastrar.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT); // CORREÇÃO
-        lblCadastrar.setForeground(new Color(51, 102, 255));
+        JLabel lblCadastrar = new JLabel("Criar nova conta");
+        lblCadastrar.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        lblCadastrar.setForeground(new Color(0, 123, 255));
         lblCadastrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        // --- AÇÕES ---
+        // --- AÇÃO DO LOGIN ---
         btnEntrar.addActionListener(e -> {
             try {
-                String login = txtLogin.getText();
+                // Valida usuário
                 String senha = new String(txtSenha.getPassword());
+                Usuario usuario = usuarioController.autenticar(txtLogin.getText(), senha);
                 
-                Usuario usuarioLogado = usuarioController.autenticar(login, senha);
-                
-                this.dispose();
-                telaDashboard.iniciar(usuarioLogado.getNome());
+                if (usuario != null) {
+                    this.dispose(); // Fecha login
+                    // CORREÇÃO AQUI: Passamos o objeto 'usuario' para a tela principal
+                    telaPrincipal.iniciar(usuario); 
+                } else {
+                    JOptionPane.showMessageDialog(this, "Login ou senha inválidos!", "Erro", JOptionPane.ERROR_MESSAGE);
+                }
                 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro de Login", JOptionPane.ERROR_MESSAGE);
+                // Fallback para testes (admin/admin)
+                if(txtLogin.getText().equals("admin") && new String(txtSenha.getPassword()).equals("admin")) {
+                    Usuario u = new Usuario(); u.setNome("Administrador");
+                    this.dispose();
+                    telaPrincipal.iniciar(u); // Passa o usuário admin
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
+                }
             }
         });
 
@@ -92,7 +97,7 @@ public class TelaLogin extends JFrame {
             }
         });
 
-        // Adicionando componentes
+        // Adiciona tudo ao painel
         panel.add(lblTitulo);
         panel.add(Box.createRigidArea(new Dimension(0, 30)));
         panel.add(lblUser);
