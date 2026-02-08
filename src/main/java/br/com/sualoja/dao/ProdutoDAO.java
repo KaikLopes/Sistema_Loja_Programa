@@ -1,47 +1,23 @@
 package br.com.sualoja.dao;
 
 import br.com.sualoja.model.Produto;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Repository
-public class ProdutoDAO {
+public interface ProdutoDAO extends JpaRepository<Produto, Integer> {
+    
+    List<Produto> findByAtivoTrueOrderByNomeAsc();
 
-    @PersistenceContext
-    private EntityManager em;
+    @Query("SELECT SUM(p.quantidadeEstoque * p.precoVenda) FROM Produto p WHERE p.ativo = true")
+    BigDecimal calcularValorTotalEstoque();
 
-    public ProdutoDAO() {
-    }
+    List<Produto> findByFornecedorId(Long id);
 
-    public ProdutoDAO(EntityManager em) {
-        this.em = em;
-    }
+    // --- NOVO: Busca produtos por Categoria ---
+    List<Produto> findByCategoriaId(Integer id);
 
-    @Transactional
-    public void cadastrar(Produto produto) {
-        this.em.persist(produto);
-    }
-
-    public Produto buscarPorId(Integer id) {
-        return this.em.find(Produto.class, id);
-    }
-
-    @Transactional
-    public void atualizar(Produto produto) {
-        this.em.merge(produto);
-    }
-
-    @Transactional
-    public void remover(Produto produto) {
-        produto = this.em.merge(produto);
-        this.em.remove(produto);
-    }
-
-    public List<Produto> buscarTodos() {
-        String jpql = "SELECT p FROM Produto p";
-        return em.createQuery(jpql, Produto.class).getResultList();
-    }
+    List<Produto> findByCriadoEmBetween(LocalDateTime inicio, LocalDateTime fim);
 }

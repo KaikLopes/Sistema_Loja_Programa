@@ -1,26 +1,10 @@
 package br.com.sualoja.dao;
 
 import br.com.sualoja.model.Categoria;
-import jakarta.persistence.EntityManager;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
-public class CategoriaDAO {
-
-    private EntityManager em;
-
-    public CategoriaDAO(EntityManager em) {
-        this.em = em;
-    }
-
-    public void cadastrar(Categoria categoria) {
-        this.em.persist(categoria);
-    }
-
-    public Categoria buscarPorId(Integer id) {
-        return this.em.find(Categoria.class, id);
-    }
-
-    public void remover(Categoria categoria) {
-        categoria = this.em.merge(categoria);
-        this.em.remove(categoria);
-    }
+public interface CategoriaDAO extends JpaRepository<Categoria, Integer> {
+    // Para listar em ordem alfabética
+    List<Categoria> findAllByOrderByNomeAsc();
 }

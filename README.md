@@ -1,69 +1,66 @@
-# Sistema de Loja de Materiais de Construção
+# 🏗️ Sistema de Gestão - Loja de Materiais de Construção
 
-Este é o projeto final para o sistema de gerenciamento de uma loja de materiais de construção, desenvolvido com Spring Boot e Java.
+Bem-vindo ao repositório do **Sistema de Loja de Materiais de Construção**. Este é uma aplicação Desktop desenvolvida em **Java**, combinando a robustez do **Spring Boot** no backend com uma interface gráfica moderna construída em **Swing** (utilizando a biblioteca **FlatLaf** para estilização).
+
+O sistema oferece uma solução completa para gestão de estoque, vendas (PDV), cadastro de clientes, fornecedores e relatórios financeiros.
+
+---
+
+## 🚀 Funcionalidades
+
+O sistema conta com um menu lateral responsivo e diversos módulos:
+
+*   **📊 Dashboard:** Visão geral com cartões de faturamento, valor em estoque, contagem de vendas e gráfico de ranking de produtos mais vendidos.
+*   **🛒 Ponto de Venda (PDV):** Interface para realização de novas vendas, cálculo de subtotal e baixa automática de estoque.
+*   **📦 Gestão de Produtos:** Cadastro completo com controle de preço de compra/venda, quantidade e associação com Fornecedores e Categorias.
+*   **👥 Gestão de Clientes:** Cadastro e manutenção da base de clientes.
+*   **🚚 Gestão de Fornecedores:** Controle de parceiros comerciais.
+*   **🏷️ Categorias:** Organização dos produtos por setores.
+*   **💰 Relatórios:** Fluxo de caixa com filtros por período (Hoje, Semana, Mês, Ano) detalhando Entradas, Saídas e Lucro.
+*   **👤 Perfil de Usuário:** Área para alteração de senha e dados cadastrais do operador logado.
+*   **🔐 Autenticação:** Sistema de Login e Cadastro de novos usuários.
+
+---
 
 ## 🛠️ Tecnologias Utilizadas
 
-*   **Java 21**
-*   **Spring Boot 3.2.3**
-*   **Maven**
-*   **PostgreSQL** (Banco de dados)
-*   **Spring Data JPA** (Persistência)
+*   **Linguagem:** Java 21
+*   **Framework:** Spring Boot 3.2.3
+*   **Interface Gráfica:** Java Swing + FlatLaf (Look and Feel moderno)
+*   **Banco de Dados:** PostgreSQL
+*   **Persistência:** Spring Data JPA / Hibernate
+*   **Gerenciador de Dependências:** Maven
+
+---
 
 ## 📋 Pré-requisitos
 
-Antes de começar, certifique-se de ter instalado em sua máquina:
+Para rodar o projeto localmente, você precisará ter instalado:
 
-1.  [Java JDK 21](https://www.oracle.com/java/technologies/downloads/#java21)
-2.  [Maven](https://maven.apache.org/download.cgi)
-3.  [PostgreSQL](https://www.postgresql.org/download/)
+1.  **[Java JDK 21](https://www.oracle.com/java/technologies/downloads/#java21)**
+2.  **[Maven](https://maven.apache.org/download.cgi)** (Geralmente incluído nas IDEs)
+3.  **[PostgreSQL](https://www.postgresql.org/download/)**
+4.  **Git**
 
-## ⚙️ Configuração do Banco de Dados (PostgreSQL)
+---
 
-Você precisa criar um banco de dados para a aplicação se conectar.
+## ⚙️ Configuração do Banco de Dados
 
-1.  Abra o seu terminal do PostgreSQL (psql) ou uma ferramenta visual como PgAdmin/DBeaver.
-2.  Execute o seguinte comando SQL para criar o banco:
+O projeto está configurado para conectar-se a um banco de dados PostgreSQL. Siga os passos abaixo para preparar o ambiente:
+
+1.  Abra seu gerenciador de banco de dados (PgAdmin, DBeaver ou terminal `psql`).
+2.  Crie o banco de dados e o usuário conforme as configurações do arquivo `application.properties`:
 
 ```sql
-CREATE DATABASE loja_construcao;
-```
+-- 1. Criar o banco de dados
+CREATE DATABASE minha_loja;
 
-3.  Configure as credenciais no projeto. Abra o arquivo `src/main/resources/application.properties` e verifique (ou adicione) as seguintes linhas, alterando `seu_usuario` e `sua_senha` conforme sua instalação local do Postgres:
+-- 2. Criar o usuário (role) com a senha esperada pelo sistema
+CREATE USER loja_user WITH ENCRYPTED PASSWORD 'loja10';
 
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/loja_construcao
-spring.datasource.username=seu_usuario
-spring.datasource.password=sua_senha
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-```
+-- 3. Conceder permissões ao usuário no banco
+GRANT ALL PRIVILEGES ON DATABASE minha_loja TO loja_user;
 
-> **Nota:** A configuração `ddl-auto=update` fará com que o Hibernate crie as tabelas (como `VendasItens`) automaticamente ao rodar o projeto.
-
-## 🚀 Como Rodar o Projeto
-
-1.  Clone este repositório:
-    ```bash
-    git clone https://github.com/seu-usuario/seu-repositorio.git
-    ```
-
-2.  Acesse a pasta do projeto:
-    ```bash
-    cd projeto-final-loja-de-materiais-de-construcao
-    ```
-
-3.  Execute o projeto via Maven:
-    ```bash
-    mvn spring-boot:run
-    ```
-
-Se tudo der certo, a aplicação iniciará e estará pronta para receber requisições (geralmente na porta `8080`).
-
-## 🧪 Testes
-
-Para rodar os testes automatizados:
-```bash
-mvn test
-```
+-- (Opcional) Se estiver usando PostgreSQL 15+, também execute:
+-- \c minha_loja
+-- GRANT ALL ON SCHEMA public TO loja_user;
