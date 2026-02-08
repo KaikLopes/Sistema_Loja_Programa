@@ -2,16 +2,22 @@ package br.com.sualoja.dao;
 
 import br.com.sualoja.model.Produto;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
-// IMPORTANTE:
-// 1. Tem que ser 'interface' e não 'class'
-// 2. Tem que estender JpaRepository<Entidade, TipoDoId>
-// No seu caso, o ID do Produto é Integer
-@Repository
 public interface ProdutoDAO extends JpaRepository<Produto, Integer> {
+    
+    List<Produto> findByAtivoTrueOrderByNomeAsc();
 
-    // Não precisa escrever nada aqui dentro!
-    // O Spring cria o findAll, save, deleteById automaticamente pra você.
+    @Query("SELECT SUM(p.quantidadeEstoque * p.precoVenda) FROM Produto p WHERE p.ativo = true")
+    BigDecimal calcularValorTotalEstoque();
 
+    List<Produto> findByFornecedorId(Long id);
+
+    // --- NOVO: Busca produtos por Categoria ---
+    List<Produto> findByCategoriaId(Integer id);
+
+    List<Produto> findByCriadoEmBetween(LocalDateTime inicio, LocalDateTime fim);
 }

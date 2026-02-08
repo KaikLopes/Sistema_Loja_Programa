@@ -20,7 +20,7 @@ buildNumber.properties
 
 # VS Code
 .vscode/
-
+.idea/
 
 # --- Sistema Operacional ---
 .DS_Store
