@@ -40,7 +40,8 @@ Para rodar o projeto localmente, você precisará ter instalado:
 1.  **[Java JDK 21](https://www.oracle.com/java/technologies/downloads/#java21)**
 2.  **[Maven](https://maven.apache.org/download.cgi)** (Geralmente incluído nas IDEs)
 3.  **[PostgreSQL](https://www.postgresql.org/download/)**
-4.  **Git**
+4.  **[Git](https://git-scm.com/downloads)**
+
 
 ---
 
