@@ -7,50 +7,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Vendas")
+@Table(name = "vendas")
 public class Venda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "data_venda")
-    private LocalDateTime dataVenda = LocalDateTime.now();
+    @Column(name = "data_hora")
+    private LocalDateTime dataHora; // <--- O CAMPO QUE ESTAVA FALTANDO
 
     @Column(name = "valor_total")
-    private BigDecimal valorTotal = BigDecimal.ZERO;
+    private BigDecimal valorTotal;
 
-    @ManyToOne // Muitas vendas para um cliente
-    @JoinColumn(name = "cliente_pessoa_id")
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    @ManyToOne // Muitas vendas para um usuário
-    @JoinColumn(name = "usuario_pessoa_id")
+    @ManyToOne
+    @JoinColumn(name = "vendedor_id")
     private Usuario vendedor;
 
-    // A Venda "manda" nos itens. Cascade ALL significa: salvou venda, salva itens.
     @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL)
     private List<VendaItem> itens = new ArrayList<>();
 
+    // Construtor vazio
     public Venda() {}
 
-    public Venda(Cliente cliente, Usuario vendedor) {
-        this.cliente = cliente;
-        this.vendedor = vendedor;
-    }
-
-    public void adicionarItem(VendaItem item) {
-        item.setVenda(this);
-        this.itens.add(item);
-        this.valorTotal = this.valorTotal.add(item.getPrecoUnitario().multiply(new BigDecimal(item.getQuantidade())));
-    }
-
-
+    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public LocalDateTime getDataVenda() { return dataVenda; }
-    public void setDataVenda(LocalDateTime dataVenda) { this.dataVenda = dataVenda; }
+    public LocalDateTime getDataHora() { return dataHora; }
+    public void setDataHora(LocalDateTime dataHora) { this.dataHora = dataHora; }
 
     public BigDecimal getValorTotal() { return valorTotal; }
     public void setValorTotal(BigDecimal valorTotal) { this.valorTotal = valorTotal; }

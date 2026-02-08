@@ -1,10 +1,6 @@
 package br.com.sualoja.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "categorias")
@@ -14,31 +10,24 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false, unique = true)
     private String nome;
 
-    // Construtor padrão (obrigatório para o JPA)
-    public Categoria() {
-    }
+    public Categoria() {}
 
-    // Construtor para facilitar a criação de objetos
     public Categoria(String nome) {
         this.nome = nome;
     }
 
-    // Getters e Setters
-    public Integer getId() {
-        return id;
-    }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
+    // Importante para o ComboBox mostrar o nome
+    @Override
+    public String toString() {
+        return this.nome;
     }
 }

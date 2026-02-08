@@ -3,24 +3,32 @@ package br.com.sualoja.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Clientes")
-@PrimaryKeyJoinColumn(name = "pessoa_id")
+@Table(name = "clientes")
+@PrimaryKeyJoinColumn(name = "pessoa_id") // <--- ISSO CONSERTA O ERRO DE SQL
 public class Cliente extends Pessoa {
 
-    private String telefone;
     private String endereco;
+    private String telefone;
 
-    public Cliente() {}
-
-    public Cliente(String nome, String cpf, String telefone, String endereco) {
-        super(nome, cpf);
-        this.telefone = telefone;
-        this.endereco = endereco;
+    public Cliente() {
+        super();
     }
 
-    public String getTelefone() { return telefone; }
-    public void setTelefone(String telefone) { this.telefone = telefone; }
+    public Cliente(String nome, String cpf, String endereco, String telefone) {
+        super(nome, cpf); // Passa nome e cpf para a tabela pai (Pessoas)
+        this.endereco = endereco;
+        this.telefone = telefone;
+    }
 
     public String getEndereco() { return endereco; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+    
+    // IMPORTANTE: Isso faz o combobox mostrar o nome, e não o código estranho
+    @Override
+    public String toString() {
+        return this.getNome(); 
+    }
 }
