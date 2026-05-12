@@ -1,26 +1,31 @@
 package br.com.sualoja.controller;
-
-import br.com.sualoja.dao.CategoriaDAO;
 import br.com.sualoja.model.Categoria;
+import br.com.sualoja.service.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import java.util.List;
 
 @Controller
-public class CategoriaController {
+public class CategoriaController{
 
     @Autowired
-    private CategoriaDAO categoriaDAO;
+    private CategoriaService categoriaService;
 
-    public void salvar(Categoria categoria) {
-        categoriaDAO.save(categoria);
+    public void salvar(Categoria categoria){
+        if(categoria.getId() != null){
+            categoriaService.atualizar(categoria.getId(), categoria);
+        }
+        else{
+            categoriaService.salvar(categoria);
+        }
     }
 
-    public List<Categoria> listarTodas() {
-        return categoriaDAO.findAllByOrderByNomeAsc();
+    public List<Categoria> listarTodas(){
+        return categoriaService.listarTodos();
     }
 
-    public void excluir(Integer id) {
-        categoriaDAO.deleteById(id);
+    public void excluir(Integer id){
+        categoriaService.deletar(id);
     }
 }
