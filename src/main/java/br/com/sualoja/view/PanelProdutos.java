@@ -1,10 +1,7 @@
 package br.com.sualoja.view;
 
 import br.com.sualoja.controller.ProdutoController;
-import br.com.sualoja.dao.CategoriaDAO; // <--- NOVO
-import br.com.sualoja.dao.FornecedorDAO;
-import br.com.sualoja.dao.ProdutoDAO;
-import br.com.sualoja.model.Categoria; // <--- NOVO
+import br.com.sualoja.model.Categoria;
 import br.com.sualoja.model.Fornecedor;
 import br.com.sualoja.model.Produto;
 import javax.swing.*;
@@ -16,19 +13,15 @@ import java.util.List;
 
 public class PanelProdutos extends JPanel {
 
-    private ProdutoController controller;
-    private FornecedorDAO fornecedorDAO;
-    private CategoriaDAO categoriaDAO; // <--- NOVO
-    private ProdutoDAO produtoDAO;
+    // Apenas O Controller! Tchau, DAOs.
+    private ProdutoController produtoController;
     private JTable tabela;
     private DefaultTableModel modeloTabela;
 
-    // Construtor atualizado recebendo CategoriaDAO
-    public PanelProdutos(ProdutoController controller, FornecedorDAO fornecedorDAO, CategoriaDAO categoriaDAO, ProdutoDAO produtoDAO) {
-        this.controller = controller;
-        this.fornecedorDAO = fornecedorDAO;
-        this.categoriaDAO = categoriaDAO; // <--- GUARDANDO
-        this.produtoDAO = produtoDAO;
+    // Construtor atualizado: Aceita APENAS o ProdutoController
+    public PanelProdutos(ProdutoController controller) {
+        this.produtoController = controller;
+
         setLayout(new BorderLayout());
         setBackground(new Color(245, 246, 250));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -55,7 +48,7 @@ public class PanelProdutos extends JPanel {
         JButton btnEditar = new JButton("Editar");
         btnEditar.setBackground(new Color(255, 193, 7));
         btnEditar.addActionListener(e -> editarSelecionado());
-        
+
         JButton btnExcluir = new JButton("Excluir");
         btnExcluir.setBackground(new Color(220, 53, 69));
         btnExcluir.setForeground(Color.WHITE);
@@ -74,56 +67,36 @@ public class PanelProdutos extends JPanel {
     private void abrirFormulario(Produto produto) {
         boolean edicao = (produto != null);
         JDialog d = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), edicao ? "Editar" : "Novo Produto", true);
-        d.setSize(600, 500); // Aumentei um pouco
-        d.setLayout(new GridLayout(7, 2, 10, 10)); // +1 linha para categoria
+        d.setSize(600, 500);
+        d.setLayout(new GridLayout(7, 2, 10, 10));
         d.setLocationRelativeTo(this);
 
         JTextField txtNome = new JTextField(edicao ? produto.getNome() : "");
         JTextField txtPrecoVenda = new JTextField(edicao ? produto.getPrecoVenda().toString() : "");
         JTextField txtPrecoCompra = new JTextField(edicao && produto.getUltimoPrecoCompra() != null ? produto.getUltimoPrecoCompra().toString() : "");
         JTextField txtQtd = new JTextField(edicao ? produto.getQuantidadeEstoque().toString() : "");
-        
+
         // FORNECEDOR
         JPanel pForn = new JPanel(new BorderLayout());
         JComboBox<Fornecedor> cbFornecedor = new JComboBox<>();
         carregarFornecedores(cbFornecedor);
         if(edicao && produto.getFornecedor() != null) cbFornecedor.setSelectedItem(produto.getFornecedor());
-        
-        JButton btnAddForn = new JButton("+");
-        btnAddForn.addActionListener(e -> {
-            String nome = JOptionPane.showInputDialog("Nome do Fornecedor:");
-            if(nome != null && !nome.isEmpty()) {
-                Fornecedor f = new Fornecedor(nome, "000");
-                fornecedorDAO.save(f);
-                carregarFornecedores(cbFornecedor);
-                cbFornecedor.setSelectedItem(f);
-            }
-        });
-        pForn.add(cbFornecedor, BorderLayout.CENTER);
-        pForn.add(btnAddForn, BorderLayout.EAST);
 
-        // --- NOVO: CATEGORIA ---
+        // O botão + foi removido daqui para simplificar a arquitetura.
+        // O ideal é cadastrar o fornecedor na tela dele!
+        pForn.add(cbFornecedor, BorderLayout.CENTER);
+
+        // CATEGORIA
         JPanel pCat = new JPanel(new BorderLayout());
         JComboBox<Categoria> cbCategoria = new JComboBox<>();
         carregarCategorias(cbCategoria);
         if(edicao && produto.getCategoria() != null) cbCategoria.setSelectedItem(produto.getCategoria());
 
-        JButton btnAddCat = new JButton("+");
-        btnAddCat.addActionListener(e -> {
-            String nome = JOptionPane.showInputDialog("Nome da Categoria:");
-            if(nome != null && !nome.isEmpty()) {
-                Categoria c = new Categoria(nome);
-                categoriaDAO.save(c);
-                carregarCategorias(cbCategoria);
-                cbCategoria.setSelectedItem(c);
-            }
-        });
         pCat.add(cbCategoria, BorderLayout.CENTER);
-        pCat.add(btnAddCat, BorderLayout.EAST);
 
         // Adiciona Campos
         d.add(new JLabel(" Nome:")); d.add(txtNome);
-        d.add(new JLabel(" Categoria:")); d.add(pCat); // NOVO
+        d.add(new JLabel(" Categoria:")); d.add(pCat);
         d.add(new JLabel(" Preço Venda (R$):")); d.add(txtPrecoVenda);
         d.add(new JLabel(" Preço Compra (R$):")); d.add(txtPrecoCompra);
         d.add(new JLabel(" Estoque Atual:")); d.add(txtQtd);
@@ -136,24 +109,36 @@ public class PanelProdutos extends JPanel {
             try {
                 Produto p = edicao ? produto : new Produto();
                 p.setNome(txtNome.getText());
-                p.setPrecoVenda(new BigDecimal(txtPrecoVenda.getText().replace(",", ".")));
-                
-                String compra = txtPrecoCompra.getText().replace(",", ".");
-                if(!compra.isEmpty()) p.setUltimoPrecoCompra(new BigDecimal(compra));
+
+                // Trata a vírgula para não estourar NumberFormatException logo de cara
+                String pVenda = txtPrecoVenda.getText().replace(",", ".");
+                if(!pVenda.isEmpty()) p.setPrecoVenda(new BigDecimal(pVenda));
+
+                String pCompra = txtPrecoCompra.getText().replace(",", ".");
+                if(!pCompra.isEmpty()) p.setUltimoPrecoCompra(new BigDecimal(pCompra));
                 else p.setUltimoPrecoCompra(BigDecimal.ZERO);
-                
+
+                // Validação de número inteiro para não quebrar a tela
+                if(txtQtd.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(d, "A quantidade é obrigatória.");
+                    return;
+                }
                 int qtd = Integer.parseInt(txtQtd.getText());
                 p.setQuantidadeEstoque(qtd);
                 if(!edicao) p.setQuantidadeInicial(qtd);
-                
+
                 p.setFornecedor((Fornecedor) cbFornecedor.getSelectedItem());
-                p.setCategoria((Categoria) cbCategoria.getSelectedItem()); // SALVA CATEGORIA
-                p.setAtivo(true); 
-                
-                produtoDAO.save(p);
+                p.setCategoria((Categoria) cbCategoria.getSelectedItem());
+                p.setAtivo(true);
+
+                // A MÁGICA AQUI: O Controller faz o trabalho!
+                produtoController.salvar(p);
+
                 d.dispose();
                 carregarDados();
                 JOptionPane.showMessageDialog(this, "Sucesso!");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(d, "Erro: Digite apenas números válidos nos campos de preço e estoque.");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(d, "Erro: " + ex.getMessage());
             }
@@ -165,36 +150,41 @@ public class PanelProdutos extends JPanel {
 
     private void carregarFornecedores(JComboBox<Fornecedor> cb) {
         cb.removeAllItems();
-        List<Fornecedor> lista = fornecedorDAO.findAllByOrderByNomeFantasiaAsc();
+        // O Controller busca!
+        List<Fornecedor> lista = produtoController.buscarFornecedores();
         for(Fornecedor f : lista) cb.addItem(f);
     }
 
     private void carregarCategorias(JComboBox<Categoria> cb) {
         cb.removeAllItems();
-        List<Categoria> lista = categoriaDAO.findAllByOrderByNomeAsc();
+        // O Controller busca!
+        List<Categoria> lista = produtoController.buscarCategorias();
         for(Categoria c : lista) cb.addItem(c);
     }
 
     public void carregarDados() {
         modeloTabela.setRowCount(0);
-        List<Produto> lista = produtoDAO.findByAtivoTrueOrderByNomeAsc();
+        // O Controller busca!
+        List<Produto> lista = produtoController.buscarTodos();
         for (Produto p : lista) {
-            String nomeForn = (p.getFornecedor() != null) ? p.getFornecedor().getNomeFantasia() : "-";
-            String nomeCat = (p.getCategoria() != null) ? p.getCategoria().getNome() : "-";
-            
-            modeloTabela.addRow(new Object[]{ 
-                p.getId(), 
-                p.getNome(), 
-                nomeCat, // <--- Categoria na tabela
-                p.getPrecoVenda(), 
-                p.getQuantidadeEstoque(),
-                nomeForn
-            });
+            // Só mostra na tabela se estiver ativo
+            if(p.getAtivo()) {
+                String nomeForn = (p.getFornecedor() != null) ? p.getFornecedor().getNomeFantasia() : "-";
+                String nomeCat = (p.getCategoria() != null) ? p.getCategoria().getNome() : "-";
+
+                modeloTabela.addRow(new Object[]{
+                        p.getId(),
+                        p.getNome(),
+                        nomeCat,
+                        p.getPrecoVenda(),
+                        p.getQuantidadeEstoque(),
+                        nomeForn
+                });
+            }
         }
     }
-    
+
     private void criarTabelaModerna() {
-        // Coluna Categoria adicionada
         String[] colunas = {"ID", "Nome", "Categoria", "Preço", "Estoque", "Fornecedor"};
         modeloTabela = new DefaultTableModel(colunas, 0) { @Override public boolean isCellEditable(int r, int c) { return false; } };
         tabela = new JTable(modeloTabela);
@@ -203,13 +193,12 @@ public class PanelProdutos extends JPanel {
         tabela.setGridColor(new Color(230,230,230));
         tabela.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         tabela.getTableHeader().setBackground(Color.WHITE);
-        
+
         DefaultTableCellRenderer center = new DefaultTableCellRenderer();
         center.setHorizontalAlignment(JLabel.CENTER);
         tabela.getColumnModel().getColumn(0).setCellRenderer(center);
-        tabela.getColumnModel().getColumn(3).setCellRenderer(center); // Preço
-        
-        // Estoque Vermelho
+        tabela.getColumnModel().getColumn(3).setCellRenderer(center);
+
         tabela.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -238,22 +227,25 @@ public class PanelProdutos extends JPanel {
         int linha = tabela.getSelectedRow();
         if(linha >= 0) {
             Integer id = (Integer) tabela.getValueAt(linha, 0);
-            Produto p = produtoDAO.findById(id).orElse(null);
+
+            // Aqui seria ideal o Controller ter um buscarPorId. Para ser rápido, pegamos da lista que já temos:
+            Produto p = produtoController.buscarTodos().stream()
+                    .filter(prod -> prod.getId().equals(id))
+                    .findFirst().orElse(null);
+
             if(p != null) abrirFormulario(p);
         }
     }
-    
+
     private void excluirSelecionado() {
         int linha = tabela.getSelectedRow();
         if(linha >= 0) {
             if(JOptionPane.showConfirmDialog(this, "Tem certeza? O produto será arquivado.", "Excluir", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 Integer id = (Integer) tabela.getValueAt(linha, 0);
-                Produto p = produtoDAO.findById(id).orElse(null);
-                if(p != null) {
-                    p.setAtivo(false);
-                    produtoDAO.save(p);
-                    carregarDados();
-                }
+
+                // O Controller faz a mágica de arquivar (setar falso e salvar)!
+                produtoController.arquivar(id);
+                carregarDados();
             }
         }
     }

@@ -18,13 +18,10 @@ public class TelaPrincipal extends JFrame {
     @Autowired private VendaController vendaController;
     @Autowired private CategoriaController categoriaController;
     @Autowired private UsuarioController usuarioController;
-
-    @Autowired private ProdutoDAO produtoDAO; 
-    @Autowired private ClienteDAO clienteDAO;
-    @Autowired private VendaItemDAO vendaItemDAO;
-    @Autowired private VendaDAO vendaDAO;
-    @Autowired private FornecedorDAO fornecedorDAO;
-    @Autowired private CategoriaDAO categoriaDAO;
+    @Autowired private ClienteController clienteController;
+    @Autowired private FornecedorController fornecedorController;
+    @Autowired private RelatorioController relatorioController;
+    @Autowired private DashboardController dashboardController;
 
     private JPanel contentPanel;
     private CardLayout cardLayout;
@@ -119,14 +116,14 @@ public class TelaPrincipal extends JFrame {
         // --- CONTEÚDO PRINCIPAL ---
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
-        
-        contentPanel.add(new PanelDashboard(produtoDAO, vendaItemDAO, vendaDAO), "dashboard");
-        contentPanel.add(new PanelProdutos(produtoController, fornecedorDAO, categoriaDAO, produtoDAO), "produtos");
-        contentPanel.add(new PanelVendas(vendaController, clienteDAO, produtoDAO, vendaItemDAO, usuarioLogado), "vendas");
-        contentPanel.add(new PanelClientes(clienteDAO), "clientes");
-        contentPanel.add(new PanelFornecedores(fornecedorDAO, produtoDAO), "fornecedores");
-        contentPanel.add(new PanelRelatorios(vendaDAO, produtoDAO), "relatorios");
-        contentPanel.add(new PanelCategorias(categoriaController, produtoDAO), "categorias");
+
+        contentPanel.add(new PanelDashboard(dashboardController), "dashboard"); // Este limparemos na fase final
+        contentPanel.add(new PanelProdutos(produtoController), "produtos");
+        contentPanel.add(new PanelVendas(vendaController, usuarioLogado), "vendas");
+        contentPanel.add(new PanelClientes(clienteController), "clientes");
+        contentPanel.add(new PanelFornecedores(fornecedorController, produtoController), "fornecedores");
+        contentPanel.add(new PanelRelatorios(relatorioController), "relatorios"); // Este limparemos na fase final
+        contentPanel.add(new PanelCategorias(categoriaController, produtoController), "categorias");
         contentPanel.add(new PanelPerfil(usuarioLogado, usuarioController, lblUsuario), "perfil");
 
         add(sidebar, BorderLayout.WEST);
