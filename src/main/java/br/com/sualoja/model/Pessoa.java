@@ -14,11 +14,13 @@ public class Pessoa {
 
     private String nome;
     private String cpf;
+    private String telefone;
+    private String email;
+    private String endereco;
     
     @Column(name = "criado_em")
     private LocalDateTime criadoEm = LocalDateTime.now();
 
-    // Construtor vazio (obrigatório pro Hibernate)
     public Pessoa() {}
 
     public Pessoa(String nome, String cpf) {
@@ -26,6 +28,7 @@ public class Pessoa {
         this.cpf = cpf;
     }
 
+    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -34,6 +37,15 @@ public class Pessoa {
 
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
+
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getEndereco() { return endereco; }
+    public void setEndereco(String endereco) { this.endereco = endereco; }
 
     public LocalDateTime getCriadoEm() { return criadoEm; }
     public void setCriadoEm(LocalDateTime criadoEm) { this.criadoEm = criadoEm; }

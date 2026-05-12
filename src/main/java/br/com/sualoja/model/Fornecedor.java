@@ -4,23 +4,22 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "fornecedores")
-public class Fornecedor {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+@PrimaryKeyJoinColumn(name = "id")
+public class Fornecedor extends Pessoa {
+    
     private String razaoSocial;
     private String nomeFantasia;
     private String cnpj;
 
-    public Fornecedor() {}
+    public Fornecedor() {
+        super();
+    }
 
     public Fornecedor(String nomeFantasia, String cnpj) {
         this.nomeFantasia = nomeFantasia;
         this.cnpj = cnpj;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
     public String getRazaoSocial() { return razaoSocial; }
     public void setRazaoSocial(String razaoSocial) { this.razaoSocial = razaoSocial; }
     public String getNomeFantasia() { return nomeFantasia; }

@@ -10,11 +10,11 @@ public class VendaItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // No Java é mais fácil ter um ID próprio, mesmo que no banco seja composto
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "venda_id")
-    @JsonIgnore // Evita referência circular na serialização JSON
+    @JsonIgnore
     private Venda venda;
 
     @ManyToOne
@@ -27,7 +27,10 @@ public class VendaItem {
     private BigDecimal precoUnitario;
     
     @Column(name = "custo_unitario_compra")
-    private BigDecimal custoUnitario; // Para calcular lucro depois
+    private BigDecimal custoUnitario;
+
+    @Column(name = "subtotal")
+    private BigDecimal subtotal;
 
     public VendaItem() {}
 
@@ -56,4 +59,7 @@ public class VendaItem {
 
     public BigDecimal getCustoUnitario() { return custoUnitario; }
     public void setCustoUnitario(BigDecimal custoUnitario) { this.custoUnitario = custoUnitario; }
+
+    public BigDecimal getSubtotal() { return subtotal; }
+    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
 }
