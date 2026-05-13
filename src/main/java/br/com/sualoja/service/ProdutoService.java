@@ -2,7 +2,6 @@ package br.com.sualoja.service;
 
 import br.com.sualoja.dao.ProdutoDAO;
 import br.com.sualoja.model.Produto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,8 +11,11 @@ import java.util.List;
 @Service
 public class ProdutoService {
 
-    @Autowired
-    private ProdutoDAO produtoDAO;
+    private final ProdutoDAO produtoDAO;
+
+    public ProdutoService(ProdutoDAO produtoDAO) {
+        this.produtoDAO = produtoDAO;
+    }
 
     public List<Produto> listarTodos() {
         return produtoDAO.findAll();

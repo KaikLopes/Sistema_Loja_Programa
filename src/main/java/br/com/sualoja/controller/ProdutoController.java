@@ -6,22 +6,24 @@ import br.com.sualoja.model.Categoria;
 import br.com.sualoja.model.Fornecedor;
 import br.com.sualoja.model.Produto;
 import br.com.sualoja.service.ProdutoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import java.util.List;
 
 @Controller
 public class ProdutoController {
 
-    @Autowired
-    private ProdutoService service;
+    private final ProdutoService service;
 
     // --- INJETAMOS OS DAOs AQUI PARA PROTEGER A TELA ---
-    @Autowired
-    private CategoriaDAO categoriaDAO;
+    private final CategoriaDAO categoriaDAO;
 
-    @Autowired
-    private FornecedorDAO fornecedorDAO;
+    private final FornecedorDAO fornecedorDAO;
+
+    public ProdutoController(ProdutoService service, CategoriaDAO categoriaDAO, FornecedorDAO fornecedorDAO) {
+        this.service = service;
+        this.categoriaDAO = categoriaDAO;
+        this.fornecedorDAO = fornecedorDAO;
+    }
 
     public List<Produto> buscarTodos() {
         return service.listarTodos();

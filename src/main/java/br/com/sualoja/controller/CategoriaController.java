@@ -1,7 +1,6 @@
 package br.com.sualoja.controller;
 import br.com.sualoja.model.Categoria;
 import br.com.sualoja.service.CategoriaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -9,8 +8,11 @@ import java.util.List;
 @Controller
 public class CategoriaController{
 
-    @Autowired
-    private CategoriaService categoriaService;
+    private final CategoriaService categoriaService;
+
+    public CategoriaController(CategoriaService categoriaService) {
+        this.categoriaService = categoriaService;
+    }
 
     public void salvar(Categoria categoria){
         if(categoria.getId() != null){

@@ -5,7 +5,6 @@ import br.com.sualoja.dao.ProdutoDAO;
 import br.com.sualoja.dao.VendaDAO;
 import br.com.sualoja.dao.VendaItemDAO;
 import br.com.sualoja.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +15,17 @@ import java.util.List;
 @Controller
 public class VendaController {
 
-    @Autowired private VendaDAO vendaDAO;
-    @Autowired private ProdutoDAO produtoDAO;
-    @Autowired private ClienteDAO clienteDAO;
-    @Autowired private VendaItemDAO vendaItemDAO;
+    private final VendaDAO vendaDAO;
+    private final ProdutoDAO produtoDAO;
+    private final ClienteDAO clienteDAO;
+    private final VendaItemDAO vendaItemDAO;
+
+    public VendaController(VendaDAO vendaDAO, ProdutoDAO produtoDAO, ClienteDAO clienteDAO, VendaItemDAO vendaItemDAO) {
+        this.vendaDAO = vendaDAO;
+        this.produtoDAO = produtoDAO;
+        this.clienteDAO = clienteDAO;
+        this.vendaItemDAO = vendaItemDAO;
+    }
 
     @Transactional
     public void realizarVenda(Venda venda, List<VendaItem> itens) throws Exception {

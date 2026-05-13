@@ -1,9 +1,7 @@
 package br.com.sualoja.view;
 
 import br.com.sualoja.controller.*;
-import br.com.sualoja.dao.*;
 import br.com.sualoja.model.Usuario;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -14,20 +12,20 @@ import java.util.List;
 @Component
 public class TelaPrincipal extends JFrame {
 
-    @Autowired private ProdutoController produtoController;
-    @Autowired private VendaController vendaController;
-    @Autowired private CategoriaController categoriaController;
-    @Autowired private UsuarioController usuarioController;
-    @Autowired private ClienteController clienteController;
-    @Autowired private FornecedorController fornecedorController;
-    @Autowired private RelatorioController relatorioController;
-    @Autowired private DashboardController dashboardController;
+    private final ProdutoController produtoController;
+    private final VendaController vendaController;
+    private final CategoriaController categoriaController;
+    private final UsuarioController usuarioController;
+    private final ClienteController clienteController;
+    private final FornecedorController fornecedorController;
+    private final RelatorioController relatorioController;
+    private final DashboardController dashboardController;
 
     private JPanel contentPanel;
     private CardLayout cardLayout;
     private JPanel sidebar;
     private boolean menuAberto = true;
-    private List<JButton> botoesMenu = new ArrayList<>();
+    private final List<JButton> botoesMenu = new ArrayList<>();
     private JLabel lblUsuario;
     private JButton botaoSelecionado;
 
@@ -37,7 +35,19 @@ public class TelaPrincipal extends JFrame {
     private final Color SIDEBAR_BTN_SELECTED = new Color(0, 123, 255);
     private final Color TEXT_COLOR = new Color(220, 220, 220);
 
-    public TelaPrincipal() {
+    public TelaPrincipal(ProdutoController produtoController, VendaController vendaController,
+                         CategoriaController categoriaController, UsuarioController usuarioController,
+                         ClienteController clienteController, FornecedorController fornecedorController,
+                         RelatorioController relatorioController, DashboardController dashboardController) {
+        this.produtoController = produtoController;
+        this.vendaController = vendaController;
+        this.categoriaController = categoriaController;
+        this.usuarioController = usuarioController;
+        this.clienteController = clienteController;
+        this.fornecedorController = fornecedorController;
+        this.relatorioController = relatorioController;
+        this.dashboardController = dashboardController;
+
         setTitle("Sua Loja - Gestão Profissional");
         setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -237,8 +247,8 @@ public class TelaPrincipal extends JFrame {
 
     // --- CLASSE PARA DESENHAR O ÍCONE (MANUALMENTE) ---
     private static class IconeMenu implements Icon {
-        private int tamanho;
-        private Color cor;
+        private final int tamanho;
+        private final Color cor;
 
         public IconeMenu(int tamanho, Color cor) {
             this.tamanho = tamanho;

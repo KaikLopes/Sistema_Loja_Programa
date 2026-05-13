@@ -4,7 +4,6 @@ import br.com.sualoja.dao.ProdutoDAO;
 import br.com.sualoja.dao.VendaDAO;
 import br.com.sualoja.model.Produto;
 import br.com.sualoja.model.Venda;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.math.BigDecimal;
@@ -15,8 +14,13 @@ import java.util.List;
 @Controller
 public class RelatorioController {
 
-    @Autowired private VendaDAO vendaDAO;
-    @Autowired private ProdutoDAO produtoDAO;
+    private final VendaDAO vendaDAO;
+    private final ProdutoDAO produtoDAO;
+
+    public RelatorioController(VendaDAO vendaDAO, ProdutoDAO produtoDAO) {
+        this.vendaDAO = vendaDAO;
+        this.produtoDAO = produtoDAO;
+    }
 
     public List<Venda> buscarVendasNoPeriodo(int filtroIndex) {
         LocalDateTime[] periodo = calcularDatas(filtroIndex);

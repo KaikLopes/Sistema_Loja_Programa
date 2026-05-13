@@ -1,7 +1,6 @@
 package br.com.sualoja.view;
 
 import br.com.sualoja.controller.UsuarioController;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.swing.*;
 import java.awt.*;
@@ -9,8 +8,11 @@ import java.awt.*;
 @Component
 public class TelaCadastro extends JDialog {
 
-    @Autowired
-    private UsuarioController usuarioController;
+    private final UsuarioController usuarioController;
+
+    public TelaCadastro(UsuarioController usuarioController) {
+        this.usuarioController = usuarioController;
+    }
 
     public void iniciar() {
         setTitle("Novo Cadastro");

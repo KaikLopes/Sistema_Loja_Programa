@@ -2,7 +2,6 @@ package br.com.sualoja.controller;
 
 import br.com.sualoja.model.Fornecedor;
 import br.com.sualoja.service.FornecedorService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -10,8 +9,11 @@ import java.util.List;
 @Controller
 public class FornecedorController {
 
-    @Autowired
-    private FornecedorService service;
+    private final FornecedorService service;
+
+    public FornecedorController(FornecedorService service) {
+        this.service = service;
+    }
 
     public List<Fornecedor> buscarTodos() {
         return service.buscarTodos();

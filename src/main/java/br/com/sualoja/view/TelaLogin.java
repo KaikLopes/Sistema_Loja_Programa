@@ -2,7 +2,6 @@ package br.com.sualoja.view;
 
 import br.com.sualoja.controller.UsuarioController;
 import br.com.sualoja.model.Usuario;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -13,14 +12,17 @@ import java.awt.event.MouseEvent;
 @Component
 public class TelaLogin extends JFrame {
 
-    @Autowired
-    private UsuarioController usuarioController;
+    private final UsuarioController usuarioController;
 
-    @Autowired
-    private TelaPrincipal telaPrincipal;
+    private final TelaPrincipal telaPrincipal;
 
-    @Autowired
-    private TelaCadastro telaCadastro;
+    private final TelaCadastro telaCadastro;
+
+    public TelaLogin(UsuarioController usuarioController, TelaPrincipal telaPrincipal, TelaCadastro telaCadastro) {
+        this.usuarioController = usuarioController;
+        this.telaPrincipal = telaPrincipal;
+        this.telaCadastro = telaCadastro;
+    }
 
     public void iniciar() {
         setTitle("Login - Sistema Loja");

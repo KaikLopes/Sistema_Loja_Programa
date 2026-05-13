@@ -2,7 +2,6 @@ package br.com.sualoja.service;
 
 import br.com.sualoja.dao.FornecedorDAO;
 import br.com.sualoja.model.Fornecedor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +10,11 @@ import java.util.List;
 @Service
 public class FornecedorService {
 
-    @Autowired
-    private FornecedorDAO fornecedorDAO;
+    private final FornecedorDAO fornecedorDAO;
+
+    public FornecedorService(FornecedorDAO fornecedorDAO) {
+        this.fornecedorDAO = fornecedorDAO;
+    }
 
     public List<Fornecedor> buscarTodos() {
         return fornecedorDAO.findAllByOrderByNomeFantasiaAsc();

@@ -2,15 +2,17 @@ package br.com.sualoja.controller;
 
 import br.com.sualoja.model.Cliente;
 import br.com.sualoja.service.ClienteService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import java.util.List;
 
 @Controller
 public class ClienteController {
 
-    @Autowired
-    private ClienteService service;
+    private final ClienteService service;
+
+    public ClienteController(ClienteService service) {
+        this.service = service;
+    }
 
     public List<Cliente> buscarTodos() {
         return service.buscarTodos();

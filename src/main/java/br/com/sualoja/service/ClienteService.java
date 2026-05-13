@@ -2,7 +2,6 @@ package br.com.sualoja.service;
 
 import br.com.sualoja.dao.ClienteDAO;
 import br.com.sualoja.model.Cliente;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +10,11 @@ import java.util.List;
 @Service
 public class ClienteService {
 
-    @Autowired
-    private ClienteDAO clienteDAO;
+    private final ClienteDAO clienteDAO;
+
+    public ClienteService(ClienteDAO clienteDAO) {
+        this.clienteDAO = clienteDAO;
+    }
 
     public List<Cliente> buscarTodos() {
         return clienteDAO.findAllByOrderByNomeAsc();

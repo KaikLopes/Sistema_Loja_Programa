@@ -2,14 +2,16 @@ package br.com.sualoja.controller;
 
 import br.com.sualoja.dao.UsuarioDAO;
 import br.com.sualoja.model.Usuario;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioDAO usuarioDAO;
+    private final UsuarioDAO usuarioDAO;
+
+    public UsuarioController(UsuarioDAO usuarioDAO) {
+        this.usuarioDAO = usuarioDAO;
+    }
 
     // Lógica de Login (MANTIDA)
     public Usuario autenticar(String login, String senha) throws Exception {

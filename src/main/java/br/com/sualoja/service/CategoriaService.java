@@ -2,7 +2,6 @@ package br.com.sualoja.service;
 
 import br.com.sualoja.dao.CategoriaDAO;
 import br.com.sualoja.model.Categoria;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +10,11 @@ import java.util.List;
 @Service
 public class CategoriaService {
 
-    @Autowired
-    private CategoriaDAO categoriaDAO;
+    private final CategoriaDAO categoriaDAO;
+
+    public CategoriaService(CategoriaDAO categoriaDAO) {
+        this.categoriaDAO = categoriaDAO;
+    }
 
     public List<Categoria> listarTodos() {
         return categoriaDAO.findAllByOrderByNomeAsc();

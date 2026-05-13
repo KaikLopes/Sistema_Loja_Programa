@@ -6,7 +6,6 @@ import br.com.sualoja.dao.VendaItemDAO;
 import br.com.sualoja.model.Produto;
 import br.com.sualoja.model.Venda;
 import br.com.sualoja.model.VendaItem;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,14 +17,17 @@ import java.util.List;
 @Service
 public class VendaService {
 
-    @Autowired
-    private VendaDAO vendaDAO;
+    private final VendaDAO vendaDAO;
 
-    @Autowired
-    private VendaItemDAO vendaItemDAO;
+    private final VendaItemDAO vendaItemDAO;
 
-    @Autowired
-    private ProdutoDAO produtoDAO;
+    private final ProdutoDAO produtoDAO;
+
+    public VendaService(VendaDAO vendaDAO, VendaItemDAO vendaItemDAO, ProdutoDAO produtoDAO) {
+        this.vendaDAO = vendaDAO;
+        this.vendaItemDAO = vendaItemDAO;
+        this.produtoDAO = produtoDAO;
+    }
 
     public List<Venda> listarTodos() {
         return vendaDAO.findAll(Sort.by(Sort.Direction.DESC, "dataHora"));

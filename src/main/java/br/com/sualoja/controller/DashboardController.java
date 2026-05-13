@@ -3,7 +3,6 @@ package br.com.sualoja.controller;
 import br.com.sualoja.dao.ProdutoDAO;
 import br.com.sualoja.dao.VendaDAO;
 import br.com.sualoja.dao.VendaItemDAO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.math.BigDecimal;
@@ -14,9 +13,15 @@ import java.util.List;
 @Controller
 public class DashboardController {
 
-    @Autowired private VendaDAO vendaDAO;
-    @Autowired private ProdutoDAO produtoDAO;
-    @Autowired private VendaItemDAO vendaItemDAO;
+    private final VendaDAO vendaDAO;
+    private final ProdutoDAO produtoDAO;
+    private final VendaItemDAO vendaItemDAO;
+
+    public DashboardController(VendaDAO vendaDAO, ProdutoDAO produtoDAO, VendaItemDAO vendaItemDAO) {
+        this.vendaDAO = vendaDAO;
+        this.produtoDAO = produtoDAO;
+        this.vendaItemDAO = vendaItemDAO;
+    }
 
     /**
      * Calcula a data de início com base no índice do ComboBox da View
